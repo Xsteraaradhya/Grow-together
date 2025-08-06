@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GrowTogether</title>
+  
+  <!-- React, Babel & Tailwind -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Custom Style -->
+  <style>
+    .logo-font {
+      font-family: 'Dancing Script', cursive;
+    }
+    .glow-text {
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(173, 216, 230, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const initialBusinesses = [
+      { id: 1, name: "Cozy Coffee Shop", category: "Cafe", description: "A warm, inviting cafe with artisan coffee.", contact: "cozycoffee@example.com" },
+      { id: 2, name: "Local Bookstore", category: "Retail", description: "A charming bookstore with rare finds.", contact: "books@example.com" },
+      { id: 3, name: "Handmade Crafts", category: "Artisan", description: "Unique handmade gifts and decor.", contact: "crafts@example.com" },
+    ];
+
+    const App = () => {
+      const [businesses, setBusinesses] = useState(initialBusinesses);
+      const [searchTerm, setSearchTerm] = useState("");
+      const [newBusiness, setNewBusiness] = useState({ name: "", category: "", description: "", contact: "" });
+
+      const filteredBusinesses = businesses.filter(business =>
+        business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        business.category.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewBusiness({ ...newBusiness, [name]: value });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (newBusiness.name && newBusiness.category && newBusiness.description && newBusiness.contact) {
+          const newId = businesses.length + 1;
+          setBusinesses([...businesses, { id: newId, ...newBusiness }]);
+          setNewBusiness({ name: "", category: "", description: "", contact: "" });
+          console.log("New business submitted:", { id: newId, ...newBusiness });
+        } else {
+          alert("Please fill out all fields.");
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-blue-200 to-red-50">
+          {/* Enhanced Header */}
+          <header className="bg-blue-600 p-6 shadow-md">
+            <h1 className="text-5xl md:text-6xl text-center logo-font text-white glow-text tracking-wide relative">
+              GrowTogether
+              <span className="block w-32 h-1 bg-white mx-auto mt-2 rounded-full animate-pulse"></span>
+            </h1>
+          </header>
+
+          {/* Main */}
+          <main className="container mx-auto p-6">
+            {/* Search */}
+            <div className="mb-8">
+              <input
+                type="text"
+                placeholder="Search businesses or categories..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-3 rounded-full border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+              />
+            </div>
+
+            {/* Business Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {filteredBusinesses.length > 0 ? (
+                filteredBusinesses.map(business => (
+                  <div key={business.id} className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                    <h2 className="text-2xl font-semibold text-blue-600">{business.name}</h2>
+                    <p className="text-red-500 font-medium">{business.category}</p>
+                    <p className="text-gray-700 mt-2">{business.description}</p>
+                    <p className="text-blue-500 mt-3 font-medium">Contact: {business.contact}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-600">No businesses found.</p>
+              )}
+            </div>
+
+            {/* Submit Business Form */}
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <h2 className="text-2xl font-semibold text-blue-600 mb-4">Promote a Small Business</h2>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Business Name"
+                  value={newBusiness.name}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  name="category"
+                  placeholder="Category (e.g., Cafe, Retail, Artisan)"
+                  value={newBusiness.category}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <textarea
+                  name="description"
+                  placeholder="Description"
+                  value={newBusiness.description}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></textarea>
+                <input
+                  type="text"
+                  name="contact"
+                  placeholder="Contact Info (e.g., email)"
+                  value={newBusiness.contact}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSubmit}
+                  className="w-full bg-red-500 text-white p-3 rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Submit Business
+                </button>
+              </div>
+            </div>
+          </main>
+
+          {/* Footer */}
+          <footer className="bg-blue-600 text-white p-4 text-center">
+            <p>&copy; 2025 GrowTogether. All rights reserved.</p>
+          </footer>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
