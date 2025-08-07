@@ -23,5 +23,5 @@ Just open `index.html` in your browser. No build or server needed.
 
 > *(Insert a screenshot of your site here if you want)*
 
-still building , wait to see the results!!!, its quite complicated to make an community websit ngl,and if yo see this ,thank you for visiting , i hope we can beome friends soonnnnn.
+still building , wait to see the results!!!, its quite complicated to make an community website ngl,and if yo see this ,thank you for visiting , i hope we can beome friends soonnnnn.
 
