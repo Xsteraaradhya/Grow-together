@@ -1,0 +1,100 @@
+```python
+import streamlit as st
+import os
+from pathlib import Path
+import pandas as pd
+
+# Get the main file path (where playlist.py is)
+MAIN_FILE_PATH = Path(__file__).parent
+UPLOADS_DIR = MAIN_FILE_PATH / "uploads"
+
+# Create uploads folder if it doesn't exist
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+
+# Set up the app with a cool layout
+st.set_page_config(page_title="Grow Together Playlist", page_icon="🎵", layout="wide")
+
+# Add nerdy, aesthetic styling
+st.markdown("""
+<style>
+body {
+    background-color: #0a0a23;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+}
+h1 {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+h2 {
+    color: #ff00ff;
+}
+.stButton>button {
+    background-color: #ff00ff;
+    color: white;
+    border-radius: 5px;
+}
+.stFileUploader>div>div>input {
+    background-color: #2a2a3e;
+    color: #ffffff;
+    border: 1px solid #00ff00;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# App title and welcome
+st.title("🎵 Grow Together: Nerdy Playlist App")
+st.markdown("""
+Hey, nerdy coder! Upload images, CSVs, or playlist files to share your vibe or promote a business! Inspired by cool coders like *viv is cool*! 😎
+""")
+
+# File uploader
+st.header("Upload Your Stuff")
+uploaded_file = st.file_uploader("Pick an image, CSV, or playlist file", type=["png", "jpg", "csv", "txt"])
+
+if uploaded_file is not None:
+    # Save the file to uploads folder
+    file_path = UPLOADS_DIR / uploaded_file.name
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"Saved to: {file_path}")
+
+    # Show the file
+    st.subheader(f"Preview: {uploaded_file.name}")
+    if uploaded_file.type in ["image/png", "image/jpeg"]:
+        st.image(uploaded_file, caption=uploaded_file.name)
+    elif uploaded_file.type == "text/csv":
+        df = pd.read_csv(uploaded_file)
+        st.write("Here's your data:")
+        st.dataframe(df.head())
+    elif uploaded_file.type == "text/plain":
+        st.write("Your playlist or text file:")
+        st.text(uploaded_file.read().decode())
+    else:
+        st.write("Can't preview this file, but it's saved! Download it below:")
+        with open(file_path, "rb") as f:
+            st.download_button(
+                label="Download File",
+                data=f,
+                file_name=uploaded_file.name,
+                mime=uploaded_file.type
+            )
+
+# Show all uploaded files
+st.header("Your Playlist Collection")
+files = [f.name for f in UPLOADS_DIR.iterdir() if f.is_file()]
+if files:
+    st.write("Files in your collection:")
+    for file in files:
+        st.write(f"- {file}")
+else:
+    st.write("No files yet. Upload something awesome!")
+
+# GitHub and community shoutout
+st.header("Join the Nerdy Crew! 🤓")
+st.markdown("Share your code on [GitHub](https://github.com/YourUsername/grow-together-app)! Inspired by cool coders like *viv is cool*.")
+
+# Footer
+st.markdown("---")
+st.markdown("Made with ❤️ by a 13-year-old coder for nerds and businesses!")
+```
